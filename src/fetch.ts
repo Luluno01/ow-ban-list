@@ -29,13 +29,13 @@ export async function fetch(
     }
     // Push task
     announcements.push(annMeta)
-    let index = i
+    let index = i - startIndex
     tasks.push(async function() {
       const text = await getText(annMeta.url)
       announcements[index].bans = parseAnn(text)
     })
     i++
-    if(maxAnnouncement && i >= maxAnnouncement) break
+    if(maxAnnouncement && i - startIndex >= maxAnnouncement) break
   }
   if(tasks.length == 0) return {
     anns: [],
