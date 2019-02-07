@@ -1,2 +1,2 @@
-export { getText } from "./getText"
+export { fetchAnnList } from "./fetchAnnList"
 export { annToRecords } from './annToRecords'
