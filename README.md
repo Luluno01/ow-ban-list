@@ -42,6 +42,16 @@ If there are errors during the fetching process, the errors will be recorded in 
 }
 ```
 
+### Build the Announcements File
+
+```Bash
+npm run buildFile [path, [maxConcurrency]]
+```
+
+`path` defaults to `announcements.json`, and the extension name `.json` will be automatically appended if your input doesn't have one.
+
+`maxConcurrency` defaults to `50`, which is empirically chosen. Set this number to `0` to cancel the limitation of max number of concurrent tasks.
+
 ## Types
 
 See `src/global.d.ts`.
