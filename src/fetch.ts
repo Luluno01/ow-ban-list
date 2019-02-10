@@ -3,6 +3,8 @@ import getAnnList from './helpers/getAnnList'
 import parseAnn from './helpers/parseAnn'
 import TaskQueue from './helpers/TaskQueue'
 import { BAN_INDEX } from './config'
+import { writeFile } from 'fs'
+import { promisify } from 'util'
 
 
 /**
@@ -51,3 +53,21 @@ export async function fetch(
 }
 
 export default fetch
+
+/**
+ * @description Fetch announcements with ban blocks and dump to a JSON file.
+ * @param path Path to destination JSON file.
+ * @param maxConcurrency Max number of concurrent fetch tasks.
+ */
+export async function build(path: string, maxConcurrency: number = 50) {
+  const writeFileAsync = promisify(writeFile)
+  const { anns, errs } = await fetch(0, 0, maxConcurrency)
+  console.warn('Failed to fetch some announcements:')
+  for(let annIndex in errs) {
+    let ann = anns[annIndex]
+    let err = errs[annIndex]
+    err = err instanceof Error ? (err.stack || err.toString()) : err
+    console.warn(`${ann.name} (${ann.url}): ${err}`)
+  }
+  await writeFileAsync(path, JSON.stringify(anns))
+}
