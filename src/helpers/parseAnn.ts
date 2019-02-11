@@ -4,8 +4,9 @@ import * as cheerio from 'cheerio'
 /**
  * @description Parse announcement text to get ban blocks.
  * @param announcement Announcement text.
+ * @returns Parsed ban blocks and the publish date of the announcement.
  */
-export function parseAnn(text: string): BanBlock[] {
+export function parseAnn(text: string): [BanBlock[], Date?] {
   let $ = cheerio.load(text)
   let comments = $('.pcb')
   let res: BanBlock[] = []
@@ -20,7 +21,13 @@ export function parseAnn(text: string): BanBlock[] {
       battleTags
     })
   })
-  return res
+  let dates = $('.dateline')
+  let date: Date
+  if(dates.length) {
+    let dateString: string = $(dates[0]).text().trim()
+    if(dateString && dateString.match(/^\d+-\d+-\d+\s+\d+:\d+:\d+$/)) date = new Date(dateString + ' UTC+8')
+  }
+  return [ res, date ]
 }
 
 export default parseAnn

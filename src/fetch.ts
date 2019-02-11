@@ -34,7 +34,9 @@ export async function fetch(
     let index = i - startIndex
     tasks.push(async function() {
       const text = await getText(annMeta.url)
-      announcements[index].bans = parseAnn(text)
+      let res = parseAnn(text)
+      announcements[index].bans = res[0]
+      announcements[index].date = res[1]
     })
     i++
     if(maxAnnouncement && i - startIndex >= maxAnnouncement) break
@@ -69,5 +71,8 @@ export async function build(path: string, maxConcurrency: number = 50) {
     err = err instanceof Error ? (err.stack || err.toString()) : err
     console.warn(`${ann.name} (${ann.url}): ${err}`)
   }
-  await writeFileAsync(path, JSON.stringify(anns))
+  await writeFileAsync(path, JSON.stringify(anns.map(ann => {
+    if(ann.date) ann.date = ann.date.getTime() as any
+    return ann
+  })))
 }

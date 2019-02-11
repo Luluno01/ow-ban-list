@@ -10,6 +10,7 @@ export function *annToRecords(anns: Announcement[]): IterableIterator<BanRecord>
       for(let battleTag of ban.battleTags) {
         yield {
           battleTag,
+          date: ann.date,
           header,
           url: ann.url,
           announcementName: ann.name
