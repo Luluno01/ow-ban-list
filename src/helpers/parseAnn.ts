@@ -21,10 +21,10 @@ export function parseAnn(text: string): [BanBlock[], Date?] {
       battleTags
     })
   })
-  let dates = $('.dateline > span')
+  let dates = $('.dateline')
   let date: Date
   if(dates.length) {
-    let dateString: string = $(dates[0]).attr('title').trim()
+    let dateString: string = (cheerio('span', dates[0]).attr('title') || $(dates[0]).text()).trim()
     if(dateString && dateString.match(/^\d+-\d+-\d+\s+\d+:\d+:\d+$/)) date = new Date(dateString + ' UTC+8')
   }
   return [ res, date ]
