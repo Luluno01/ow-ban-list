@@ -64,12 +64,15 @@ export default fetch
 export async function build(path: string, maxConcurrency: number = 50) {
   const writeFileAsync = promisify(writeFile)
   const { anns, errs } = await fetch(0, 0, maxConcurrency)
-  console.warn('Failed to fetch some announcements:')
-  for(let annIndex in errs) {
-    let ann = anns[annIndex]
-    let err = errs[annIndex]
-    err = err instanceof Error ? (err.stack || err.toString()) : err
-    console.warn(`${ann.name} (${ann.url}): ${err}`)
+  let errIndex = Object.keys(errs)
+  if(errIndex.length) {
+    console.warn('Failed to fetch some announcements:')
+    for(let annIndex in errs) {
+      let ann = anns[annIndex]
+      let err = errs[annIndex]
+      err = err instanceof Error ? (err.stack || err.toString()) : err
+      console.warn(`${ann.name} (${ann.url}): ${err}`)
+    }
   }
   await writeFileAsync(path, JSON.stringify(anns.map(ann => {
     if(ann.date) ann.date = ann.date.getTime() as any
